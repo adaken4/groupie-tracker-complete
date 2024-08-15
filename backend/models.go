@@ -1,7 +1,7 @@
 package backend
 
 type Artists struct {
-	Id              int      `json:"id"`
+	ID              int      `json:"id"`
 	ImageURL        string   `json:"image"`
 	Name            string   `json:"name"`
 	Members         []string `json:"members"`
@@ -12,8 +12,18 @@ type Artists struct {
 	RelationsURL    string   `json:"relations"`
 }
 
-type Locations struct{}
+type Locations struct {
+	ID        int      `json:"id"`
+	Locations []string `json:"locations"`
+	DatesURL  string   `json:"dates"`
+}
 
-type Dates struct{}
+type Dates struct {
+	ID    int      `json:"id"`
+	Dates []string `json:"dates"`
+}
 
-type Relation struct{}
+type Relation struct {
+	ID             int                 `json:"id"`
+	DatesLocations map[string][]string `json:"datesLocations"`
+}

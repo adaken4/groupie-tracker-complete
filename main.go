@@ -1,7 +1,14 @@
 package main
 
-import "groupie-tracker-complete/backend"
+import (
+	"groupie-tracker-complete/backend"
+	"net/http"
+)
 
 func main() {
-	backend.PrintArtist(45)
+	server := http.Server{
+		Addr:    "192.168.1.6:8080",
+		Handler: backend.RegisterRoutes(),
+	}
+	server.ListenAndServe()
 }

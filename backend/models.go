@@ -12,18 +12,29 @@ type Artists struct {
 	RelationsURL    string   `json:"relations"`
 }
 
-type Locations struct {
+type Location struct {
 	ID        int      `json:"id"`
 	Locations []string `json:"locations"`
-	DatesURL  string   `json:"dates"`
+	Dates     string   `json:"dates"`
 }
 
-type Dates struct {
+type Locations struct {
+	Index []Location `json:"index"`
+}
+
+type Date struct {
 	ID    int      `json:"id"`
 	Dates []string `json:"dates"`
 }
 
+type Dates struct {
+	Index []Date `json:"index"`
+}
+
 type Relation struct {
+	Index []DatesLocations `json:"index"`
+}
+type DatesLocations struct {
 	ID             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
 }

@@ -1,13 +1,14 @@
 package main
 
 import (
-	"groupie-tracker-complete/backend"
 	"net/http"
+
+	"groupie-tracker-complete/backend"
 )
 
 func main() {
 	server := http.Server{
-		Addr:    "192.168.1.6:8080",
+		Addr:    ":8080",
 		Handler: backend.RegisterRoutes(),
 	}
 	server.ListenAndServe()

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist Card</title>
+    <title>Artists</title>
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
         </p>
             <p class="artist-creation-date"><strong>Formation Year:</strong>{{ .CreationDate }}</p>
             <p class="artist-first-album"><strong>First Album:</strong>{{ .FirstAlbum }}</p>
-            <a href="{{ .LocationsURL }}" class="artist-link" target="_blank">Tour Locations</a>
+            <a href="/artist?id={{ .ID }}" class="artist-link" target="_blank">Tour Locations</a>
             <a href="{{ .ConcertDatesURL }}" class="artist-link" target="_blank">Concert Dates</a>
             <a href="{{ .RelationsURL }}" class="artist-link" target="_blank">Artist Relations</a>
         </div>

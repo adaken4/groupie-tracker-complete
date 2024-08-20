@@ -22,9 +22,7 @@
         </p>
             <p class="artist-creation-date"><strong>Formation Year:</strong>{{ .CreationDate }}</p>
             <p class="artist-first-album"><strong>First Album:</strong>{{ .FirstAlbum }}</p>
-            <a href="/artist?id={{ .ID }}" class="artist-link" target="_blank">Tour Locations</a>
-            <a href="{{ .ConcertDatesURL }}" class="artist-link" target="_blank">Concert Dates</a>
-            <a href="{{ .RelationsURL }}" class="artist-link" target="_blank">Artist Relations</a>
+            <a href="/artist?id={{ .ID }}" class="artist-link" target="_blank">View Tour Details</a>
         </div>
     </div>
     {{ end }}

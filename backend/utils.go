@@ -7,29 +7,20 @@ import (
 	"time"
 )
 
+var client = &http.Client{
+	Timeout: 10 * time.Second,
+}
+
+const APIURL = "https://groupietrackers.herokuapp.com/api"
+
 func GetAndUnmarshalArtists() ([]Artists, error) {
 	artists := []Artists{}
-	artistsUrl := "https://groupietrackers.herokuapp.com/api/artists"
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-
-	resp, err := client.Get(artistsUrl)
+	jsonData, err := getJSONData(APIURL + "/artists")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get artists: %w", err)
+		return artists, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusOK {
-		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&artists)
-		if err != nil {
-			return nil, fmt.Errorf("failed to decode artists: %w", err)
-		}
-	} else {
-		return nil, fmt.Errorf("recieved a non-200 response code: %d", resp.StatusCode)
-	}
+	json.Unmarshal(jsonData, &artists)
 
 	return artists, nil
 }
@@ -37,27 +28,12 @@ func GetAndUnmarshalArtists() ([]Artists, error) {
 func GetAndUnmarshalLocations(Id int) (Location, error) {
 	locations := Locations{}
 	location := Location{}
-	locationsURL := "https://groupietrackers.herokuapp.com/api/locations"
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-
-	resp, err := client.Get(locationsURL)
+	jsonData, err := getJSONData(APIURL + "/locations")
 	if err != nil {
-		return location, fmt.Errorf("failed to get locations: %w", err)
+		return location, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusOK {
-		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&locations)
-		if err != nil {
-			return location, fmt.Errorf("failed to decode locations: %w", err)
-		}
-	} else {
-		return location, fmt.Errorf("received a non-200 response code: %d", resp.StatusCode)
-	}
+	json.Unmarshal(jsonData, &locations)
 
 	for _, v := range locations.Index {
 		if v.ID == Id {
@@ -72,22 +48,11 @@ func GetAndUnmarshalDates(Id int) (Date, error) {
 	dates := Dates{}
 	date := Date{}
 
-	datesURL := "https://groupietrackers.herokuapp.com/api/dates"
-	resp, err := http.Get(datesURL)
+	jsonData, err := getJSONData(APIURL + "/dates")
 	if err != nil {
 		return date, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusOK {
-		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&dates)
-		if err != nil {
-			return date, err
-		}
-	} else {
-		return date, fmt.Errorf("failed to get data: %s", resp.Status)
-	}
+	json.Unmarshal(jsonData, &dates)
 	for _, v := range dates.Index {
 		if v.ID == Id {
 			date = v
@@ -101,23 +66,12 @@ func GetAndUnmarshalRelation(Id int) (ArtistDetails, error) {
 	relation := Relation{}
 	artistDetails := ArtistDetails{}
 
-	relationURL := "https://groupietrackers.herokuapp.com/api/relation"
-	resp, err := http.Get(relationURL)
+	jsonData, err := getJSONData(APIURL + "/relation")
 	if err != nil {
 		return artistDetails, err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&relation)
-		if err != nil {
-			return artistDetails, err
-		}
-	} else {
-		return artistDetails, fmt.Errorf("failed to get relation data: %s", resp.Status)
-	}
-
+	json.Unmarshal(jsonData, &relation)
 	for _, v := range relation.Index {
 		if v.ID == Id {
 			artistDetails = v
@@ -125,4 +79,24 @@ func GetAndUnmarshalRelation(Id int) (ArtistDetails, error) {
 	}
 
 	return artistDetails, nil
+}
+
+func getJSONData(url string) (json.RawMessage, error) {
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get json data: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("received a non-200 response code: %d", resp.StatusCode)
+	}
+
+	var body json.RawMessage
+	err = json.NewDecoder(resp.Body).Decode(&body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode json data: %w", err)
+	}
+
+	return body, nil
 }

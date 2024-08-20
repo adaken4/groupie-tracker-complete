@@ -3,39 +3,49 @@ package backend
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"time"
 )
 
-func GetAndUnmarshalArtists() []Artists {
+func GetAndUnmarshalArtists() ([]Artists, error) {
 	artists := []Artists{}
-
 	artistsUrl := "https://groupietrackers.herokuapp.com/api/artists"
-	resp, err := http.Get(artistsUrl)
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	resp, err := client.Get(artistsUrl)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, fmt.Errorf("failed to get artists: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-
 		decoder := json.NewDecoder(resp.Body)
 		err = decoder.Decode(&artists)
 		if err != nil {
-			log.Fatalln(err)
+			return nil, fmt.Errorf("failed to decode artists: %w", err)
 		}
+	} else {
+		return nil, fmt.Errorf("recieved a non-200 response code: %d", resp.StatusCode)
 	}
-	return artists
+
+	return artists, nil
 }
 
 func GetAndUnmarshalLocations(Id int) (Location, error) {
 	locations := Locations{}
 	location := Location{}
-
 	locationsURL := "https://groupietrackers.herokuapp.com/api/locations"
-	resp, err := http.Get(locationsURL)
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	resp, err := client.Get(locationsURL)
 	if err != nil {
-		return location, err
+		return location, fmt.Errorf("failed to get locations: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -43,11 +53,12 @@ func GetAndUnmarshalLocations(Id int) (Location, error) {
 		decoder := json.NewDecoder(resp.Body)
 		err = decoder.Decode(&locations)
 		if err != nil {
-			return location, err
+			return location, fmt.Errorf("failed to decode locations: %w", err)
 		}
 	} else {
-		return location, fmt.Errorf("failed to get data: %s", resp.Status)
+		return location, fmt.Errorf("received a non-200 response code: %d", resp.StatusCode)
 	}
+
 	for _, v := range locations.Index {
 		if v.ID == Id {
 			location = v
@@ -86,26 +97,32 @@ func GetAndUnmarshalDates(Id int) (Date, error) {
 	return date, nil
 }
 
-func GetAndUnmarshalRelation(Id int) (Location, error) {
-	locations := Locations{}
-	location := Location{}
+func GetAndUnmarshalRelation(Id int) (ArtistDetails, error) {
+	relation := Relation{}
+	artistDetails := ArtistDetails{}
 
-	locationsURL := "https://groupietrackers.herokuapp.com/api/relation"
-	resp, err := http.Get(locationsURL)
+	relationURL := "https://groupietrackers.herokuapp.com/api/relation"
+	resp, err := http.Get(relationURL)
 	if err != nil {
-		return location, err
+		return artistDetails, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
 		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&locations)
+		err = decoder.Decode(&relation)
 		if err != nil {
-			return location, err
+			return artistDetails, err
 		}
 	} else {
-		return location, fmt.Errorf("failed to get data: %s", resp.Status)
+		return artistDetails, fmt.Errorf("failed to get relation data: %s", resp.Status)
 	}
 
-	return locations.Index[Id-1], nil
+	for _, v := range relation.Index {
+		if v.ID == Id {
+			artistDetails = v
+		}
+	}
+
+	return artistDetails, nil
 }

@@ -31,10 +31,11 @@ type Dates struct {
 	Index []Date `json:"index"`
 }
 
-type Relation struct {
-	Index []DatesLocations `json:"index"`
-}
-type DatesLocations struct {
+type ArtistDetails struct {
 	ID             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
+}
+
+type Relation struct {
+	Index []ArtistDetails `json:"index"`
 }

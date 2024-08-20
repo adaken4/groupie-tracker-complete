@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"groupie-tracker-complete/backend"
@@ -8,8 +9,12 @@ import (
 
 func main() {
 	server := http.Server{
-		Addr:    ":8080",
+		Addr:    "localhost:8080",
 		Handler: backend.RegisterRoutes(),
 	}
-	server.ListenAndServe()
+	log.Println("server listening on http://localhost:8080")
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatalf("failed to start server: %v", err)
+	}
 }

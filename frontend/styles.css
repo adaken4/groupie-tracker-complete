@@ -22,14 +22,14 @@ body {
 /* Media query for screens smaller than 1024px */
 @media (max-width: 1024px) {
     .grid-container {
-        grid-template-columns: repeat(2, 250px); /* 2 columns */
+        grid-template-columns: repeat(2, 325px); /* 2 columns */
     }
 }
 
 /* Media query for screens smaller than 768px */
 @media (max-width: 768px) {
     .grid-container {
-        grid-template-columns: 250px; /* 1 column */
+        grid-template-columns: 400px; /* 1 column */
     }
 }
 

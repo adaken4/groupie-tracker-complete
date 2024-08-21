@@ -10,22 +10,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Header -->
+    <header>
+        <h1>Music Groupies Tracker</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/artists">Artists</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
     <div class="grid-container">
-    {{ range . }}
-    <div class="artist-card">
-        <img src="{{ .ImageURL }}" alt="Artist Image" class="artist-image">
-        <div class="artist-info">
-            <h2 class="artist-name">{{ .Name }}</h2>
-            <p class="artist-members"><strong>Members:</strong>{{ range .Members }}
-            {{ . }},
-            {{ end }}
-        </p>
-            <p class="artist-creation-date"><strong>Formation Year:</strong>{{ .CreationDate }}</p>
-            <p class="artist-first-album"><strong>First Album:</strong>{{ .FirstAlbum }}</p>
-            <a href="/artist?id={{ .ID }}" class="artist-link" target="_blank">View Tour Details</a>
+        {{ range . }}
+        <div class="artist-card">
+            <img src="{{ .ImageURL }}" alt="Artist Image" class="artist-image">
+            <div class="artist-info">
+                <h2 class="artist-name">{{ .Name }}</h2>
+                <p class="artist-members"><strong>Members:</strong>{{ range .Members }} {{ . }}, {{ end }}</p>
+                <p class="artist-creation-date"><strong>Formation Year:</strong>{{ .CreationDate }}</p>
+                <p class="artist-first-album"><strong>First Album:</strong>{{ .FirstAlbum }}</p>
+                <a href="/relation?id={{ .ID }}" class="artist-link" target="_blank">View Tour Details</a>
+            </div>
         </div>
+        {{ end }}
     </div>
-    {{ end }}
-</div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Music Groupies Tracker. All Rights Reserved.</p>
+        <p>Follow us on:
+            <a href="#">Twitter</a> |
+            <a href="#">Facebook</a> |
+            <a href="#">Instagram</a>
+        </p>
+    </footer>
 </body>
 </html>
